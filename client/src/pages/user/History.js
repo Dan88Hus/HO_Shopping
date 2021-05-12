@@ -89,7 +89,7 @@ const History = () => {
         </div>
 
 
-        <div className="col-auto">
+        <div className="col">
           <span className="container text-muted"><b>User History Page</b></span>
           {orders ? (showEachOrders()) 
           : ("No Order Yet")
