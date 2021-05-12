@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
 import {auth, googleAuthProvider} from '../../components/firebase'
 import {Link} from 'react-router-dom'
 import {Button} from 'antd'
@@ -10,11 +10,37 @@ import {useDispatch, useSelector} from 'react-redux'
 
 const Login = ({history}) => {
 
+  
   const [loading, setLoading] = useState(false)
   const [email,setEmail] = useState('huseyinozdogan@gmail.com')
   const [password,setPassword] = useState('212121')
   const dispatch = useDispatch()
   const {user} = useSelector(state => ({...state})) 
+  
+  useEffect(() => {
+    let intended = history.location.state
+    if (intended) {
+      return
+    } else {
+      if(user && user.token) {
+        history.push("/")
+      }
+    }
+  },[user, history])
+
+
+  const roleBasedRedirect = (res) => {
+    let intended = history.location.state
+    if (intended){
+      history.push(intended.from)
+      } else{
+      if (res.data.role === "admin") { 
+      history.push('/admin/dashboard')
+      }else{     
+      history.push('/user/history')
+      }
+      }
+    }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,7 +52,7 @@ const Login = ({history}) => {
       const idTokenResult = await user.getIdTokenResult()
 
       await createOrUpdateUser(idTokenResult.token)
-      .then((res) => console.log("createOrUpdate Response for token from frontend to backend", res))
+      // .then((res) => console.log("createOrUpdate Response for token from frontend to backend", res))
       .then((res) => {
         dispatch({
           type: 'LOGGED_IN_USER',
@@ -39,7 +65,7 @@ const Login = ({history}) => {
           }
         })
         toast.success('Login Successful')
-        // roleBasedRedirect(res)
+        roleBasedRedirect(res)
       })
       .catch((error) => console.log("Login Error",error))
       // history.push('/')
@@ -76,6 +102,54 @@ const Login = ({history}) => {
     </form> 
   )
 
+  const googleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true)
+    try {
+      const result = await auth.signInWithPopup(googleAuthProvider)
+      .then(async () => {
+        // console.log("result",result)
+        const {user} = result
+        const idTokenResult = await user.getIdTokenResult()
+    
+        await createOrUpdateUser(idTokenResult.token)
+        // .then((res) => console.log("createOrUpdate Response for token from frontend to backend", res))
+        .then((res) => {
+          dispatch({
+            type: 'LOGGED_IN_USER',
+            payload: {
+              name: res.data.name,
+              email: res.data.email,
+              token: idTokenResult.token,
+              role: res.data.role,
+              _id: res.data._id,
+            }
+          })
+          toast.success('Login Successful')
+          roleBasedRedirect(res)
+        })
+        .catch((error) => console.log(error))
+      } )
+    } catch (error) {
+      console.log(error.message)
+      setLoading(false)
+      toast.error(error.message)
+    }
+  }
+
+  const googleLoginButton = () => ( 
+    <Button 
+      onClick={googleLogin}
+      type="danger" className="mb-3"
+      block
+      shape="round"
+      icon={<GoogleOutlined/>}
+      disabled={!email || password.length < 5}
+      size="large"
+      >Login with Google
+    </Button>
+  )
+
   return (
     <div className="container p-5">
     <div className="row">
@@ -83,8 +157,7 @@ const Login = ({history}) => {
         {loading ? <h4 className="text-danger">Loading</h4> : <h4>Loading...</h4>}
         
         {loginForm()}
-        {/* {googleLoginButton()} */}
-        Google Login Button
+        {googleLoginButton()}
         <Link to="/forgot/password"
         className="float-right">Forgot password
         </Link>
