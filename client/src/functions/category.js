@@ -3,8 +3,6 @@ import axios from 'axios'
 
 export const getCategories = async () => {
   const res= await axios.get(`${process.env.REACT_APP_API}/categories`)
-  console.log('test')
-  console.log(res)
   return res
 }
 

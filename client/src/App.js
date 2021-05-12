@@ -18,6 +18,14 @@ import Wishlist from './pages/user/Wishlist'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import CategoryCreate from './pages/admin/category/CategoryCreate'
 import CategoryUpdate from './pages/admin/category/CategoryUpdate'
+import SubCreate from './pages/admin/sub/subCreate'
+import SubUpdate from './pages/admin/sub/subUpdate'
+import ProductCreate from './pages/admin/product/ProductCreate'
+import AllProducts from './pages/admin/product/AllProducts'
+import ProductUpdate from './pages/admin/product/ProductUpdate'
+import Product from './pages/Product'
+import CategoryHome from './pages/CategoryHome'
+
 
 function App() {
   const dispatch = useDispatch()
@@ -63,6 +71,13 @@ function App() {
         <AdminRoute exact path="/admin/dashboard" component={AdminDashboard} />
         <AdminRoute exact path="/admin/category" component={CategoryCreate} />
         <AdminRoute exact path="/admin/category/:slug" component={CategoryUpdate} />
+        <AdminRoute exact path="/admin/sub" component={SubCreate} />
+        <AdminRoute exact path="/admin/sub/:slug" component={SubUpdate} />
+        <AdminRoute exact path="/admin/product/" component={ProductCreate} />
+        <AdminRoute exact path="/admin/products/" component={AllProducts} />
+        <AdminRoute exact path="/admin/product/:slug" component={ProductUpdate} />
+        <Route exact path="/product/:slug" component={Product} />
+        <Route exact path="/category/:slug" component={CategoryHome} />
 
       </Switch>
       
