@@ -7,16 +7,10 @@ import {createOrUpdateUser} from '../../functions/auth'
 import {toast} from 'react-toastify'
 import {useDispatch, useSelector} from 'react-redux'
 
-
-const Login = ({history}) => {
-
-  
-  const [loading, setLoading] = useState(false)
-  const [email,setEmail] = useState('huseyinozdogan@gmail.com')
-  const [password,setPassword] = useState('212121')
+function Login({history}) {
   const dispatch = useDispatch()
   const {user} = useSelector(state => ({...state})) 
-  
+
   useEffect(() => {
     let intended = history.location.state
     if (intended) {
@@ -28,7 +22,12 @@ const Login = ({history}) => {
     }
   },[user, history])
 
+  const [email,setEmail] = useState('huseyinozdogan@gmail.com')
+  const [password,setPassword] = useState('212121')
+  const [loading, setLoading] = useState(false)
 
+
+  
   const roleBasedRedirect = (res) => {
     let intended = history.location.state
     if (intended){
@@ -36,23 +35,24 @@ const Login = ({history}) => {
       } else{
       if (res.data.role === "admin") { 
       history.push('/admin/dashboard')
+
       }else{     
       history.push('/user/history')
       }
       }
     }
 
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true)
     try {
       const result = await auth.signInWithEmailAndPassword(email,password)
-      // console.log("result",result)
       const {user} = result
       const idTokenResult = await user.getIdTokenResult()
 
       await createOrUpdateUser(idTokenResult.token)
-      // .then((res) => console.log("createOrUpdate Response for token from frontend to backend", res))
       .then((res) => {
         dispatch({
           type: 'LOGGED_IN_USER',
@@ -67,40 +67,17 @@ const Login = ({history}) => {
         toast.success('Login Successful')
         roleBasedRedirect(res)
       })
-      .catch((error) => console.log("Login Error",error))
-      // history.push('/')
+      .catch((error) => console.log(error))
+      
+      
+
     } catch (error) {
       console.log(error)
       setLoading(false)
       toast.error(error.message)
     }
-  }
 
-  const loginForm = () => ( 
-    
-    <form onSubmit={handleSubmit}>
-      <div className="form-group">
-        <input type="email" placeholder="Please enter email"
-        className="form-control" onChange={e => setEmail(e.target.value)}
-        value={email} autoFocus/>
-      </div>
-      
-      <div className="form-group">
-        <input type="password" placeholder="Please enter password"
-        className="form-control" onChange={e => setPassword(e.target.value)}
-        value={password} />
-      </div>
-      <Button 
-      onClick={handleSubmit}
-      type="primary" className="mb-3"
-      block
-      shape="round"
-      icon={<LoginOutlined/>}
-      disabled={!email || password.length < 5}
-      size="large"
-      >Login with Email</Button>
-    </form> 
-  )
+  }
 
   const googleLogin = async (e) => {
     e.preventDefault();
@@ -108,12 +85,10 @@ const Login = ({history}) => {
     try {
       const result = await auth.signInWithPopup(googleAuthProvider)
       .then(async () => {
-        // console.log("result",result)
         const {user} = result
         const idTokenResult = await user.getIdTokenResult()
     
         await createOrUpdateUser(idTokenResult.token)
-        // .then((res) => console.log("createOrUpdate Response for token from frontend to backend", res))
         .then((res) => {
           dispatch({
             type: 'LOGGED_IN_USER',
@@ -129,13 +104,50 @@ const Login = ({history}) => {
           roleBasedRedirect(res)
         })
         .catch((error) => console.log(error))
+
+
+
       } )
+      
+
     } catch (error) {
-      console.log(error.message)
+      console.log(error)
       setLoading(false)
       toast.error(error.message)
     }
+
   }
+
+  const loginForm = () => ( 
+    
+    <form onSubmit={handleSubmit}>
+      <div className="form-group">
+        <input type="email" placeholder="Please enter email"
+        className="form-control" onChange={e => setEmail(e.target.value)}
+        value={email} autoFocus/>
+
+        
+      </div>
+      
+      <div className="form-group">
+      
+        <input type="password" placeholder="Please enter password"
+        className="form-control" onChange={e => setPassword(e.target.value)}
+        value={password} />
+      </div>
+      
+
+      <Button 
+      onClick={handleSubmit}
+      type="primary" className="mb-3"
+      block
+      shape="round"
+      icon={<LoginOutlined/>}
+      disabled={!email || password.length < 5}
+      size="large"
+      >Login with Email</Button>
+    </form> 
+  )
 
   const googleLoginButton = () => ( 
     <Button 
@@ -147,23 +159,24 @@ const Login = ({history}) => {
       disabled={!email || password.length < 5}
       size="large"
       >Login with Google
-    </Button>
+      </Button>
+
   )
 
   return (
     <div className="container p-5">
-    <div className="row">
-      <div className="col-md-6 offset-md-3">
-        {loading ? <h4 className="text-danger">Loading</h4> : <h4>Loading...</h4>}
-        
-        {loginForm()}
-        {googleLoginButton()}
-        <Link to="/forgot/password"
-        className="float-right">Forgot password
-        </Link>
+      <div className="row">
+        <div className="col-md-6 offset-md-3">
+          {loading ? <h4 className="text-danger">Loading</h4> : <h4>Loading...</h4>}
+          
+          {loginForm()}
+          {googleLoginButton()}
+          <Link to="/forgot/password"
+          className="float-right">Forgot password
+          </Link>
+        </div>
       </div>
     </div>
-  </div>
   )
 }
 

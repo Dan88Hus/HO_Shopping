@@ -25,6 +25,12 @@ import AllProducts from './pages/admin/product/AllProducts'
 import ProductUpdate from './pages/admin/product/ProductUpdate'
 import Product from './pages/Product'
 import CategoryHome from './pages/CategoryHome'
+import SubHome from './pages/sub/SubHome'
+import Shop from './pages/Shop'
+import Cart from './pages/Cart'
+import Checkout from './pages/Checkout'
+import CreateCouponPage from './pages/admin/coupon/CreateCouponPage'
+import Payment from './pages/Payment'
 
 
 function App() {
@@ -78,7 +84,14 @@ function App() {
         <AdminRoute exact path="/admin/product/:slug" component={ProductUpdate} />
         <Route exact path="/product/:slug" component={Product} />
         <Route exact path="/category/:slug" component={CategoryHome} />
+        <Route exact path="/sub/:slug" component={SubHome} />
+        <Route exact path="/shop/" component={Shop} />
+        <Route exact path="/cart/" component={Cart} />
+        <UserRoute exact path="/checkout" component={Checkout} />
+        <AdminRoute exact path="/admin/coupon" component={CreateCouponPage} />
+        <UserRoute exact path="/payment" component={Payment} />
 
+        
       </Switch>
       
 

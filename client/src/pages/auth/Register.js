@@ -3,11 +3,12 @@ import {auth} from '../../components/firebase'
 import {toast} from 'react-toastify'
 import {useSelector} from 'react-redux'
 
-const Register = ({history}) => {
+
+function Register({history}) {
 
   const [email,setEmail] = useState('huseyinozdogan@gmail.com')
 
-  const {user} = useSelector(state => ({...state}))
+  const {user} = useSelector(state => ({...state})) 
 
   useEffect(() => {
     if(user && user.token) {
@@ -15,10 +16,11 @@ const Register = ({history}) => {
     }
   },[user, history])
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log("email written", email)
-    // console.log(process.env.REACT_APP_REGISTER_REDIRECT_URL)
+    console.log("email written", email)
+    console.log(process.env.REACT_APP_REGISTER_REDIRECT_URL)
     const config = {
       url: process.env.REACT_APP_REGISTER_REDIRECT_URL,
       handleCodeInApp: true
@@ -30,7 +32,7 @@ const Register = ({history}) => {
   }
 
   const registerForm = () => ( 
-
+    
     <form onSubmit={handleSubmit}>
       <input type="email" placeholder="Please enter email"
       className="form-control" onChange={e => setEmail(e.target.value)}
@@ -41,16 +43,17 @@ const Register = ({history}) => {
     </form> 
   )
 
+
   return (
     <div className="container p-5">
-    <div className="row">
-      <div className="col-md-6 offset-md-3">
-        <h4>Register</h4>
-        
-        {registerForm()}
+      <div className="row">
+        <div className="col-md-6 offset-md-3">
+          <h4>Register</h4>
+          
+          {registerForm()}
+        </div>
       </div>
     </div>
-  </div>
   )
 }
 

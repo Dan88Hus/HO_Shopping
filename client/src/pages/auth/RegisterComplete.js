@@ -1,16 +1,21 @@
-import React, {useState, useEffect} from 'react'
+import React,{useState, useEffect} from 'react'
 import {auth} from '../../components/firebase'
 import {toast} from 'react-toastify'
 import {useDispatch} from 'react-redux'
 import {createOrUpdateUser} from '../../functions/auth'
 
 
-const RegisterComplete = ({history}) => {
+function RegisterComplete({history}) {
 
   const [email,setEmail] = useState('huseyinozdogan@gmail.com')
   const [password,setPassword] = useState('212121')
-  // const {user} = useSelector(state => ({...state})) 
   const dispatch = useDispatch()
+
+
+
+  useEffect( () => {
+    setEmail(window.localStorage.getItem('emailForRegistration'))
+  }, [history])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,15 +30,13 @@ const RegisterComplete = ({history}) => {
 
     }
     try {
-      const result = await auth.signInWithEmailLink(email, window.location.href)
+      const result = await auth.signInWithEmailLink(email,window.location.href)
       if (result.user.emailVerified) {
         window.localStorage.removeItem('emailForRegistraion')
         let user = auth.currentUser
         await user.updatePassword(password)
         const idTokenResult = await user.getIdTokenResult()
-        //redux
         await createOrUpdateUser(idTokenResult.token)
-      // .then((res) => console.log("createOrUpdate Response for token from frontend to backend", res))
       .then((res) => {
         dispatch({
           type: 'LOGGED_IN_USER',
@@ -61,23 +64,23 @@ const RegisterComplete = ({history}) => {
     
   }
 
-
   const completeRegistrationForm = () => ( 
-
+    
     <form onSubmit={handleSubmit}>
       <input type="email"
       className="form-control"
       value={email} disabled/>
       <br/>
-  
+
       <input type="password" placeholder="Please enter password"
       className="form-control" onChange={e => setPassword(e.target.value)}
       value={password} autoFocus/>
       <br/>
-  
+
       <button type="submit" className="btn btn-outline-success">Complete Registration</button>
     </form> 
   )
+
 
   return (
     <div className="container p-5">
