@@ -84,7 +84,8 @@ function Login({history}) {
     setLoading(true)
     try {
       const result = await auth.signInWithPopup(googleAuthProvider)
-      .then(async () => {
+      .then(async (result) => {
+        console.log("popuo google", result)
         const {user} = result
         const idTokenResult = await user.getIdTokenResult()
     
