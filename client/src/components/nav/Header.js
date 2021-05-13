@@ -37,14 +37,14 @@ function Header() {
         </Menu.Item> */}
 
         <Menu.Item key={current} icon={<ShoppingCartOutlined />}>
-          <Link to='/shop'>Shop</Link>
+          <Link to='/'>Shop</Link>
         </Menu.Item>
 
         <Menu.Item key="cart" icon={<ShoppingCartOutlined />}>
           <Link to='/cart'>
-            {/* <Badge count={cart.length} offset={[9, 0]}> */}
+            <Badge count={cart.length} offset={[9, 0]}>
               Cart
-            {/* </Badg  e> */}
+            </Badge>
           </Link>
         </Menu.Item>
 

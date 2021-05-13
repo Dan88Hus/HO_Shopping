@@ -85,17 +85,12 @@ function App() {
         <Route exact path="/product/:slug" component={Product} />
         <Route exact path="/category/:slug" component={CategoryHome} />
         <Route exact path="/sub/:slug" component={SubHome} />
-        <Route exact path="/shop/" component={Shop} />
+        <Route exact path="/" component={Shop} />
         <Route exact path="/cart/" component={Cart} />
         <UserRoute exact path="/checkout" component={Checkout} />
         <AdminRoute exact path="/admin/coupon" component={CreateCouponPage} />
         <UserRoute exact path="/payment" component={Payment} />
-
-        
       </Switch>
-      
-
-
     </div>
   );
 }

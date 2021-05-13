@@ -39,12 +39,14 @@ export const removeWishlist = async (productId, authtoken) =>
 
 
 
-  export const userCart = async (cart, authtoken) =>
-  await axios.post(`${process.env.REACT_APP_API}/user/cart` , {cart}, {
+  export const userCart = async (cart, authtoken) =>{ 
+  // console.log("cart", cart)
+return  await axios.post(`${process.env.REACT_APP_API}/user/cart` , {cart}, {
     headers: {
       authtoken,
     }
   })
+}
 
 
 export const getUserCart = async (authtoken) =>

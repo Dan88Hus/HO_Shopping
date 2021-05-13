@@ -29,11 +29,6 @@ function AdminNav() {
           <Link to="/admin/coupon" className="nav-link">Coupon</Link>
         </li>
 
-
-        <li className="nav-item">
-          <Link to="/admin/password" className="nav-link">Update User Password</Link>
-        </li>
-
       </ul>
     </div>
   )

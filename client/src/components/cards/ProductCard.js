@@ -41,7 +41,7 @@ const ProductCard = ({product}) => {
        <div className="text-center pt-1 pb-3">No rating yet</div>
      )}
 
-      <Card hoverable cover={
+      <Card cover={
       <img src={ images && images.length ? images[0].url : "" }/>
        } style={{width: 130}}
        actions={[

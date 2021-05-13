@@ -8,31 +8,27 @@ const Order = require("../models/order")
 
 exports.userCart = async(req, res) => {
   const {cart} = req.body
-  // console.log(cart)
+  console.log("CART comes to backend", cart)
   let products = []
   const user = await User.findOne({email: req.user.email}).exec()
   let cartExistByThisUser = await Cart.findOne({orderdBy: user._id}).exec()
   
-  // if (cartExistByThisUser) {
-  //   cartExistByThisUser.remove()
-  // }
+  if (cartExistByThisUser) {
+    cartExistByThisUser.remove()
+  }
   for ( let i = 0; i<cart.length; i++){
     let object = {}
     object.product = cart[i]._id
     object.count = cart[i].count
     object.color = cart[i].color
-    //getting price from our DB not front, to prevent price change from local storage manually
     let productFromDb = await Product.findById(cart[i]._id).select("price").exec()
     object.price = productFromDb.price
     products.push(object)
-// console.log("enoguh2  ")
   }
-  // console.log("products that saved DB", products)
 
   let cartTotal = 0
   for (let i=0; i<products.length; i++){
     cartTotal = cartTotal + products[i].price * products[i].count
-    // console.log("enough")
   }
   console.log("cartTotal", cartTotal)
   let newCart = await new Cart({
@@ -40,7 +36,6 @@ exports.userCart = async(req, res) => {
     cartTotal,
     orderdBy: user._id,
   }).save()
-  // console.log("new Cart----->", newCart)
   res.json({ ok: true})
 }
 
@@ -49,7 +44,6 @@ exports.getUserCart = async (req,res) => {
 
   let cart = await Cart.findOne({ orderdBy : user._id})
   .populate("products.product", "_id title price totalAfterDiscount").exec()
-  // without 2nd argument it populates everyhitng but 2nd argument is restriction to populate fields
 
   const {products, cartTotal, totalAfterDiscount} = cart
   res.json({products, cartTotal, totalAfterDiscount})
@@ -71,7 +65,6 @@ exports.applyCouponToUserCart = async (req,res) => {
       err: "Invalid Coupon"
     })
   }
-  // console.log("validCoupon:", validCoupon)
  
   const user = await User.findOne({email: req.user.email}).exec()
 
@@ -87,7 +80,6 @@ console.log("----------->", totalAfterDiscount)
 }
 
 exports.createOrder = async (req, res) => {
-  // console.log("create order req.user", req.user)
   
   const {paymentIntent} = req.body.stripeResponse
   const user = await User.findOne({email: req.user.email}).exec()
@@ -96,22 +88,19 @@ exports.createOrder = async (req, res) => {
     products, paymentIntent, orderdBy: user._id
   }).save()
 
-  //decrement quantity, increment sold
   let bulkOption = products.map((item) => {
     return {updateOne: {
-      filter: {_id: item.product._id}, //products is array in model
+      filter: {_id: item.product._id}, 
       update: {$inc: {quantity: -item.count, sold: +item.count}}
     }}
   })
   let updated = await Product.bulkWrite(bulkOption, {new: true}) //mongoose query
 
-  // console.log("NEW ORDER SAVED", newOrder)
   res.json({ok: true})
 }
 
 exports.emptyUserCart = async (req, res) => {
   
-  // console.log("empty cart req.user", req.user)
   const user = await User.findOne({ email: req.user.email }).exec();
   const cart = await Cart.findOneAndRemove({ orderdBy: user._id }).exec();
   res.json(cart); 
@@ -126,14 +115,12 @@ exports.orders = async (req, res) => {
 
 }
 
-// addToWishlist wishlist removeFromWishlist
 exports.addToWishlist = async (req, res) => {
   const { productId } = req.body;
-  // console.log(productId)
 
   const user = await User.findOneAndUpdate(
     { email: req.user.email },
-    { $addToSet: { wishlisht: productId } } // to not update same product again and again when user click many times 
+    { $addToSet: { wishlisht: productId } } 
   ).exec();
 
   res.json({ ok: true });

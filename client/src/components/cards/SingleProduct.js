@@ -68,14 +68,14 @@ const SingleProduct = ({product, onStartClick, star}) => {
     </div>
 
     <div className="col-md-5">
-      <h1 className="bg-info p-3">{title}</h1>
+      <h1 className="text-muted p-3">{title}</h1>
       {product && product.rating && product.rating.length>0 ?
      ( showAverage(product)) : (
        <div className="text-center pt-1 pb-3">No rating yet</div>
      )}
       
 
-     <Card hoverable
+     <Card
        actions={[
          
         <a onClick={handleAddToWishList}

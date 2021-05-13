@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import {getUserCart, saveUserAddress, applyCoupon} from '../functions/user'
-import ReactQuill from 'react-quill'
-import "react-quill/dist/quill.snow.css"
+import { Input } from 'antd';
+// import ReactQuill from 'react-quill'
+// import "react-quill/dist/quill.snow.css"
 import { toast } from 'react-toastify'
 
-
+const { TextArea } = Input;
 
 
 const Checkout = ({history}) => {
@@ -81,10 +82,10 @@ useEffect(() => {
       <div className="col-md-8">
         Delivery adfress
         <br/>
-        <ReactQuill theme="snow" value={address}
+        {/* <ReactQuill theme="snow" value={address}
         onChange={setAddress} 
-
-        />
+        /> */}
+        <TextArea row={1} showCount bordered value={address} onChange={(e)=> setAddress(e.target.value)}/>
         <button className="btn btn-primary mt-2"
         onClick={saveAdressToDb}
         >Save</button>
@@ -100,6 +101,7 @@ useEffect(() => {
         Order Summary 
         <hr/>
         Products {products.length}
+        {/* {JSON.stringify(products)} */}
         <hr/>
         {products.map((p, i )=> (
           <div key={i}>
